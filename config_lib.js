@@ -32,6 +32,9 @@ where {
           schema:addressRegion ?pref                   
        ]
   ]
+  filter(regex(?pref,'東京都'))
+#  filter(regex(?long,'139.7'))
+
 }
 */}).toString().match(/\n([\s\S]*)\n/)[1];
 
