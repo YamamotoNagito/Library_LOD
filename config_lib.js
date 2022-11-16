@@ -32,7 +32,7 @@ where {
           schema:addressRegion ?pref                   
        ]
   ]
-  filter(regex(?pref,'東京都'))
+  filter(regex(?pref,''))
 #  filter(regex(?long,'139.7'))
 
 }
