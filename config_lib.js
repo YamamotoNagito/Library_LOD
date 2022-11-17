@@ -117,47 +117,47 @@ select_lib.onchange = event => {
 }
 // ⓶日本一○○な図書館の表示に関して
 // ⓷県ごとの表示に関して
-let select_pref = document.querySelector('[name="pref_name"]');
-select_pref.onchange = event => {
+// let select_pref = document.querySelector('[name="pref_name"]');
+// select_pref.onchange = event => {
 
-  // 県ごとが選択された場合
-  if(select_pref.options[select_pref.selectedIndex].value.toString() == "全国"){
-    query = query.replace(/".*"/, '"' +  + '"');
-  }else{
-    query = query.replace(/".*"/, '"' + select_pref.options[select_pref.selectedIndex].value.toString() + '"');
-  }
+//   // 県ごとが選択された場合
+//   if(select_pref.options[select_pref.selectedIndex].value.toString() == "全国"){
+//     query = query.replace(/".*"/, '"' +  + '"');
+//   }else{
+//     query = query.replace(/".*"/, '"' + select_pref.options[select_pref.selectedIndex].value.toString() + '"');
+//   }
 
-  console.log(query);
+//   console.log(query);
 
-  $('body').modalmanager('loading').find('.modal-scrollable').off('click.modalmanager');
-    qr = sendQuery(endpoint, query);
-    qr.fail(
-        function (xhr, textStatus, thrownError) {
-            $('body').modalmanager('removeLoading');
-            alert("Error: A '" + textStatus + "' occurred.");
-        }
-    );
-    qr.done(
-        function (json) {
-            dataJson = [];
-            for (var i = 0; i < json.results.bindings.length; i++) {
-                dataJson.push(_convSparqlJsonToGeoJson(json.results.bindings[i]));
-            }
-            typeAheadSource = ArrayToSet(typeAheadSource);
-            $('#filter-string').typeahead({ source: typeAheadSource });
+//   $('body').modalmanager('loading').find('.modal-scrollable').off('click.modalmanager');
+//     qr = sendQuery(endpoint, query);
+//     qr.fail(
+//         function (xhr, textStatus, thrownError) {
+//             $('body').modalmanager('removeLoading');
+//             alert("Error: A '" + textStatus + "' occurred.");
+//         }
+//     );
+//     qr.done(
+//         function (json) {
+//             dataJson = [];
+//             for (var i = 0; i < json.results.bindings.length; i++) {
+//                 dataJson.push(_convSparqlJsonToGeoJson(json.results.bindings[i]));
+//             }
+//             typeAheadSource = ArrayToSet(typeAheadSource);
+//             $('#filter-string').typeahead({ source: typeAheadSource });
 
-            $('body').modalmanager('removeLoading');
-            $('body').removeClass('modal-open');
-            addSparqlJsonMarkers();
-        }
-    );
+//             $('body').modalmanager('removeLoading');
+//             $('body').removeClass('modal-open');
+//             addSparqlJsonMarkers();
+//         }
+//     );
 
-    $("#clear").click(function (evt) {
-        evt.preventDefault();
-        $("#filter-string").val("").focus();
-        addSparqlJsonMarkers();
-    });
-}
+//     $("#clear").click(function (evt) {
+//         evt.preventDefault();
+//         $("#filter-string").val("").focus();
+//         addSparqlJsonMarkers();
+//     });
+// }
 
 // document.getElementsByName('pref_name').click(function() {
 
