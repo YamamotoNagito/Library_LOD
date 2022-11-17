@@ -18,18 +18,19 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
-select distinct * 
+select distinct *
 where {
   ?uri a schema:Organization;
        rdfs:label ?name;
 #       schema:url ?webpage;
+        org:classification ?class;
        org:hasSite [
 #         a org:Site;
          geo:lat ?lat;
          geo:long ?long;
          org:siteAddress [
 #          schema:addressLocality ?pref;
-          schema:addressRegion ?pref                   
+          schema:addressRegion ?pref
        ]
   ]
   filter(regex(?pref,""))
@@ -45,7 +46,7 @@ document.querySelector('[name="number_one_list"]').style.display="none";
 
 // 最初にセレクトボックスから知りたい要素を選択する
 let select_box = document.querySelector('[name="select_box"]');
-select_box.onchange = event => { 
+select_box.onchange = event => {
     // セレクトボックス選択に応じて表示項目を変更する
     if(select_box.options[select_box.selectedIndex].value.toString() == "表示方法"){
         document.querySelector('[name="pref_name"]').style.display="none";
@@ -69,23 +70,22 @@ select_box.onchange = event => {
         console.log("aaaa");
     }
     console.log("aaaaa");
-}  
+}
 // TODO：以下の⓵・⓶をやっていく(⓷を参考にすること)
 // ⓵館種ごとの表示に関して
-// ⓶日本一○○な図書館の表示に関して
-// ⓷県ごとの表示に関して
-let select_pref = document.querySelector('[name="pref_name"]');
-select_pref.onchange = event => { 
+let select_lib = document.querySelector('[name="lib_name"]');
+select_lib.onchange = event => {
 
-  // 県ごとが選択された場合 
-  if(select_pref.options[select_pref.selectedIndex].value.toString() == "全国"){
-    query = query.replace(/".*"/, '"' +  + '"');
-  }else{
-    query = query.replace(/".*"/, '"' + select_pref.options[select_pref.selectedIndex].value.toString() + '"');
+  // 県ごとが選択された場合
+  if(select_lib.options[select_lib.selectedIndex].value.toString() == "全国"){
+    query = query.replace(/filter.*\n/, 'filter');
   }
-  
+// else{
+//     query = query.replace(/".*"/, '"' + select_lib.options[select_lib.selectedIndex].value.toString() + '"');
+//   }
+
   console.log(query);
-  
+
   $('body').modalmanager('loading').find('.modal-scrollable').off('click.modalmanager');
     qr = sendQuery(endpoint, query);
     qr.fail(
@@ -102,13 +102,56 @@ select_pref.onchange = event => {
             }
             typeAheadSource = ArrayToSet(typeAheadSource);
             $('#filter-string').typeahead({ source: typeAheadSource });
-  
+
             $('body').modalmanager('removeLoading');
             $('body').removeClass('modal-open');
             addSparqlJsonMarkers();
         }
     );
-  
+
+    $("#clear").click(function (evt) {
+        evt.preventDefault();
+        $("#filter-string").val("").focus();
+        addSparqlJsonMarkers();
+    });
+}
+// ⓶日本一○○な図書館の表示に関して
+// ⓷県ごとの表示に関して
+let select_pref = document.querySelector('[name="pref_name"]');
+select_pref.onchange = event => {
+
+  // 県ごとが選択された場合
+  if(select_pref.options[select_pref.selectedIndex].value.toString() == "全国"){
+    query = query.replace(/".*"/, '"' +  + '"');
+  }else{
+    query = query.replace(/".*"/, '"' + select_pref.options[select_pref.selectedIndex].value.toString() + '"');
+  }
+
+  console.log(query);
+
+  $('body').modalmanager('loading').find('.modal-scrollable').off('click.modalmanager');
+    qr = sendQuery(endpoint, query);
+    qr.fail(
+        function (xhr, textStatus, thrownError) {
+            $('body').modalmanager('removeLoading');
+            alert("Error: A '" + textStatus + "' occurred.");
+        }
+    );
+    qr.done(
+        function (json) {
+            dataJson = [];
+            for (var i = 0; i < json.results.bindings.length; i++) {
+                dataJson.push(_convSparqlJsonToGeoJson(json.results.bindings[i]));
+            }
+            typeAheadSource = ArrayToSet(typeAheadSource);
+            $('#filter-string').typeahead({ source: typeAheadSource });
+
+            $('body').modalmanager('removeLoading');
+            $('body').removeClass('modal-open');
+            addSparqlJsonMarkers();
+        }
+    );
+
     $("#clear").click(function (evt) {
         evt.preventDefault();
         $("#filter-string").val("").focus();
@@ -117,7 +160,7 @@ select_pref.onchange = event => {
 }
 
 // document.getElementsByName('pref_name').click(function() {
-    
+
 //     console.log("aaa");
 
 // //     const num = document.getElementsByName('pref_name').selectedIndex;
@@ -140,13 +183,13 @@ select_pref.onchange = event => {
 // //             }
 // //             typeAheadSource = ArrayToSet(typeAheadSource);
 // //             $('#filter-string').typeahead({ source: typeAheadSource });
-  
+
 // //             $('body').modalmanager('removeLoading');
 // //             $('body').removeClass('modal-open');
 // //             addSparqlJsonMarkers();
 // //         }
 // //     );
-  
+
 // //     $("#clear").click(function (evt) {
 // //         evt.preventDefault();
 // //         $("#filter-string").val("").focus();
