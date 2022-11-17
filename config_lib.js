@@ -38,16 +38,50 @@ where {
 }
 */}).toString().match(/\n([\s\S]*)\n/)[1];
 
-let select = document.querySelector('[name="pref_name"]');
+// 最初は県ごと・館種ごとなどのセレクトボックスは非表示に
+document.querySelector('[name="pref_name"]').style.display="none";
+document.querySelector('[name="lib_name"]').style.display="none";
+document.querySelector('[name="number_one_list"]').style.display="none";
 
-select.onchange = event => { 
-//   console.log(select.selectedIndex);
-//   console.log(select.options[select.selectedIndex].value.toString());
+// 最初にセレクトボックスから知りたい要素を選択する
+let select_box = document.querySelector('[name="select_box"]');
+select_box.onchange = event => { 
+    // セレクトボックス選択に応じて表示項目を変更する
+    if(select_box.options[select_box.selectedIndex].value.toString() == "表示方法"){
+        document.querySelector('[name="pref_name"]').style.display="none";
+        document.querySelector('[name="lib_name"]').style.display="none";
+        document.querySelector('[name="number_one_list"]').style.display="none";
+        console.log("a");
+    }else if(select_box.options[select_box.selectedIndex].value.toString() == "県ごと"){
+        document.querySelector('[name="pref_name"]').style.display="block";
+        document.querySelector('[name="lib_name"]').style.display="none";
+        document.querySelector('[name="number_one_list"]').style.display="none";
+        console.log("aa");
+    }else if(select_box.options[select_box.selectedIndex].value.toString() == "館種ごと"){
+        document.querySelector('[name="pref_name"]').style.display="none";
+        document.querySelector('[name="lib_name"]').style.display="block";
+        document.querySelector('[name="number_one_list"]').style.display="none";
+        console.log("aaa");
+    }else if(select_box.options[select_box.selectedIndex].value.toString() == "日本で一番○○な図書館は？"){
+        document.querySelector('[name="pref_name"]').style.display="none";
+        document.querySelector('[name="lib_name"]').style.display="none";
+        document.querySelector('[name="number_one_list"]').style.display="block";
+        console.log("aaaa");
+    }
+    console.log("aaaaa");
+}  
+// TODO：以下の⓵・⓶をやっていく(⓷を参考にすること)
+// ⓵館種ごとの表示に関して
+// ⓶日本一○○な図書館の表示に関して
+// ⓷県ごとの表示に関して
+let select_pref = document.querySelector('[name="pref_name"]');
+select_pref.onchange = event => { 
 
-  if(select.options[select.selectedIndex].value.toString() == "全国"){
-  query = query.replace(/".*"/, '"' +  + '"');
+  // 県ごとが選択された場合 
+  if(select_pref.options[select_pref.selectedIndex].value.toString() == "全国"){
+    query = query.replace(/".*"/, '"' +  + '"');
   }else{
-         query = query.replace(/".*"/, '"' + select.options[select.selectedIndex].value.toString() + '"');
+    query = query.replace(/".*"/, '"' + select_pref.options[select_pref.selectedIndex].value.toString() + '"');
   }
   
   console.log(query);

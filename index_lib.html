@@ -34,6 +34,13 @@
         </form>
         <div id="search-results" class="leaflet-control-attribution leaflet-control pull-right"></div>
 
+        <select name="select_box">
+            <option value="表示方法" selected>表示方法</option>
+            <option value="県ごと" >県ごと</option>
+            <option value="館種ごと" >館種ごと</option>
+            <option value="日本で一番○○な図書館は？" >日本で一番○○な図書館は？</option>
+        </select>
+        
         <select name="pref_name">
             <option value="" selected>全国</option>
             <option value="北海道">北海道</option>
@@ -83,7 +90,22 @@
             <option value="宮崎県">宮崎県</option>
             <option value="鹿児島県">鹿児島県</option>
             <option value="沖縄県">沖縄県</option>
-            </select>
+        </select>
+
+        <select name="lib_name">
+            <option value="" selected>館種</option>
+            <option value="" >国立</option>
+            <option value="" >〇立</option>
+            <option value="" >〇立</option>
+        </select>
+        
+        <select name="number_one_list">
+            <option value="" selected>一番○○な図書館</option>
+            <option value="" >日本最東</option>
+            <option value="" >日本最西</option>
+            <option value="" >日本最南</option>
+            <option value="" >日本最北</option>
+        </select>
     </div>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
