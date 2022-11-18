@@ -1,4 +1,5 @@
 var endpoint = "https://uedayou.net/ld/library/api/sparql";
+
 var query = (function () {/*
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
@@ -39,9 +40,51 @@ where {
 }
 */}).toString().match(/\n([\s\S]*)\n/)[1];
 
-let select = document.querySelector('[name="pref_name"]');
+var query_lib = (function () {/*
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX jrslod: <https://uedayou.net/jrslod/>
+PREFIX ldlibterms: <https://uedayou.net/ld/library/terms/>
+PREFIX dbpedia: <http://dbpedia.org/ontology/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ic: <http://imi.go.jp/ns/core/rdf#>
+PREFIX org: <http://www.w3.org/ns/org#>
+PREFIX isil: <http://id.ndl.go.jp/vocab/isil/>
+PREFIX ldlib: <https://uedayou.net/ld/library/>
+PREFIX schema: <http://schema.org/>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX ndl: <http://ndl.go.jp/dcndl/terms/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+select distinct *
+where {
+  ?uri a schema:Organization;
+       rdfs:label ?name;
+#       schema:url ?webpage;
+        org:classification ?class;
+       org:hasSite [
+#         a org:Site;
+         geo:lat ?lat;
+         geo:long ?long;
+         org:siteAddress [
+#          schema:addressLocality ?pref;
+          schema:addressRegion ?pref
+       ]
+  ]
+  filter(regex(str(?class),""))
+#  filter(regex(?long,'139.7'))
 
-<<<<<<< HEAD
+}
+*/}).toString().match(/\n([\s\S]*)\n/)[1];
+
+// 最初は県ごと・館種ごとなどのセレクトボックスは非表示に
+document.querySelector('[name="pref_name"]').style.display="none";
+document.querySelector('[name="lib_name"]').style.display="none";
+document.querySelector('[name="number_one_list"]').style.display="none";
+
 // 最初にセレクトボックスから知りたい要素を選択する
 let select_box = document.querySelector('[name="select_box"]');
 select_box.onchange = event => {
@@ -74,19 +117,9 @@ select_box.onchange = event => {
 let select_lib = document.querySelector('[name="lib_name"]');
 select_lib.onchange = event => {
 
-  // 県ごとが選択された場合
+  // 国立が選択された場合
   if(select_lib.options[select_lib.selectedIndex].value.toString() == "全国"){
-    query = query.replace(/filter.*\n/, 'filter');
-=======
-select.onchange = event => { 
-//   console.log(select.selectedIndex);
-//   console.log(select.options[select.selectedIndex].value.toString());
-
-  if(select.options[select.selectedIndex].value.toString() == "全国"){
-  query = query.replace(/".*"/, '"' +  + '"');
-  }else{
-         query = query.replace(/".*"/, '"' + select.options[select.selectedIndex].value.toString() + '"');
->>>>>>> parent of 30f0b64 (初期段階でセレクト機能を追加)
+    query_lib = query_lib.replace(/filter.*\n/, 'filter');
   }
 // else{
 //     query = query.replace(/".*"/, '"' + select_lib.options[select_lib.selectedIndex].value.toString() + '"');
@@ -125,47 +158,47 @@ select.onchange = event => {
 }
 // ⓶日本一○○な図書館の表示に関して
 // ⓷県ごとの表示に関して
-// let select_pref = document.querySelector('[name="pref_name"]');
-// select_pref.onchange = event => {
+let select_pref = document.querySelector('[name="pref_name"]');
+select_pref.onchange = event => {
 
-//   // 県ごとが選択された場合
-//   if(select_pref.options[select_pref.selectedIndex].value.toString() == "全国"){
-//     query = query.replace(/".*"/, '"' +  + '"');
-//   }else{
-//     query = query.replace(/".*"/, '"' + select_pref.options[select_pref.selectedIndex].value.toString() + '"');
-//   }
+  // 県ごとが選択された場合
+  if(select_pref.options[select_pref.selectedIndex].value.toString() == "全国"){
+    query = query.replace(/".*"/, '"' +  + '"');
+  }else{
+    query = query.replace(/".*"/, '"' + select_pref.options[select_pref.selectedIndex].value.toString() + '"');
+  }
 
-//   console.log(query);
+  console.log(query);
 
-//   $('body').modalmanager('loading').find('.modal-scrollable').off('click.modalmanager');
-//     qr = sendQuery(endpoint, query);
-//     qr.fail(
-//         function (xhr, textStatus, thrownError) {
-//             $('body').modalmanager('removeLoading');
-//             alert("Error: A '" + textStatus + "' occurred.");
-//         }
-//     );
-//     qr.done(
-//         function (json) {
-//             dataJson = [];
-//             for (var i = 0; i < json.results.bindings.length; i++) {
-//                 dataJson.push(_convSparqlJsonToGeoJson(json.results.bindings[i]));
-//             }
-//             typeAheadSource = ArrayToSet(typeAheadSource);
-//             $('#filter-string').typeahead({ source: typeAheadSource });
+  $('body').modalmanager('loading').find('.modal-scrollable').off('click.modalmanager');
+    qr = sendQuery(endpoint, query);
+    qr.fail(
+        function (xhr, textStatus, thrownError) {
+            $('body').modalmanager('removeLoading');
+            alert("Error: A '" + textStatus + "' occurred.");
+        }
+    );
+    qr.done(
+        function (json) {
+            dataJson = [];
+            for (var i = 0; i < json.results.bindings.length; i++) {
+                dataJson.push(_convSparqlJsonToGeoJson(json.results.bindings[i]));
+            }
+            typeAheadSource = ArrayToSet(typeAheadSource);
+            $('#filter-string').typeahead({ source: typeAheadSource });
 
-//             $('body').modalmanager('removeLoading');
-//             $('body').removeClass('modal-open');
-//             addSparqlJsonMarkers();
-//         }
-//     );
+            $('body').modalmanager('removeLoading');
+            $('body').removeClass('modal-open');
+            addSparqlJsonMarkers();
+        }
+    );
 
-//     $("#clear").click(function (evt) {
-//         evt.preventDefault();
-//         $("#filter-string").val("").focus();
-//         addSparqlJsonMarkers();
-//     });
-// }
+    $("#clear").click(function (evt) {
+        evt.preventDefault();
+        $("#filter-string").val("").focus();
+        addSparqlJsonMarkers();
+    });
+}
 
 // document.getElementsByName('pref_name').click(function() {
 
