@@ -265,8 +265,10 @@ select_pref.onchange = event => {
 
   // 県ごとが選択された場合
   if(select_pref.options[select_pref.selectedIndex].value.toString() == "全国"){
-    query = query.replace(/".*"/, '"' +  + '"');
+    console.log('zenkoku')
+    query = query.replace(/".*"/, '""');
   }else{
+    console.log('not_zenkoku')
     query = query.replace(/".*"/, '"' + select_pref.options[select_pref.selectedIndex].value.toString() + '"');
   }
 
