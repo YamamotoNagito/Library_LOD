@@ -39,11 +39,9 @@ where {
 }
 */}).toString().match(/\n([\s\S]*)\n/)[1];
 
-// 最初は県ごと・館種ごとなどのセレクトボックスは非表示に
-document.querySelector('[name="pref_name"]').style.display="none";
-document.querySelector('[name="lib_name"]').style.display="none";
-document.querySelector('[name="number_one_list"]').style.display="none";
+let select = document.querySelector('[name="pref_name"]');
 
+<<<<<<< HEAD
 // 最初にセレクトボックスから知りたい要素を選択する
 let select_box = document.querySelector('[name="select_box"]');
 select_box.onchange = event => {
@@ -79,6 +77,16 @@ select_lib.onchange = event => {
   // 県ごとが選択された場合
   if(select_lib.options[select_lib.selectedIndex].value.toString() == "全国"){
     query = query.replace(/filter.*\n/, 'filter');
+=======
+select.onchange = event => { 
+//   console.log(select.selectedIndex);
+//   console.log(select.options[select.selectedIndex].value.toString());
+
+  if(select.options[select.selectedIndex].value.toString() == "全国"){
+  query = query.replace(/".*"/, '"' +  + '"');
+  }else{
+         query = query.replace(/".*"/, '"' + select.options[select.selectedIndex].value.toString() + '"');
+>>>>>>> parent of 30f0b64 (初期段階でセレクト機能を追加)
   }
 // else{
 //     query = query.replace(/".*"/, '"' + select_lib.options[select_lib.selectedIndex].value.toString() + '"');
