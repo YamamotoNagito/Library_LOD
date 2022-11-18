@@ -116,19 +116,31 @@ select_box.onchange = event => {
 // ⓵館種ごとの表示に関して
 let select_lib = document.querySelector('[name="lib_name"]');
 select_lib.onchange = event => {
-
+    console.log('b');
   // 国立が選択された場合
-  if(select_lib.options[select_lib.selectedIndex].value.toString() == "全国"){
-    query_lib = query_lib.replace(/filter.*\n/, 'filter');
+  if(select_lib.options[select_lib.selectedIndex].value.toString() == "国立図書館"){
+    query_lib = query_lib.replace(/".*"/, '"http://id.ndl.go.jp/vocab/libtype#NationalLibraries"');
+    console.log(query_lib);
+  }else if(select_lib.options[select_lib.selectedIndex].value.toString() == "公共図書館"){
+    query_lib = query_lib.replace(/".*"/, '"http://id.ndl.go.jp/vocab/libtype#PublicLibraries"');
+    console.log(query_lib);
+  }else if(select_lib.options[select_lib.selectedIndex].value.toString() == "大学図書館"){
+    query_lib = query_lib.replace(/".*"/, '"http://id.ndl.go.jp/vocab/libtype#AcademicLibraries"');
+    console.log(query_lib);
+  }else if(select_lib.options[select_lib.selectedIndex].value.toString() == "学校図書館"){
+    query_lib = query_lib.replace(/".*"/, '"http://id.ndl.go.jp/vocab/libtype#SchoolLibraryMediaCenters"');
+    console.log(query_lib);
+  }else if(select_lib.options[select_lib.selectedIndex].value.toString() == "専門図書館"){
+    query_lib = query_lib.replace(/".*"/, '"http://id.ndl.go.jp/vocab/libtype#SpecialLibraries"');
+    console.log(query_lib);
+  }else if(select_lib.options[select_lib.selectedIndex].value.toString() == "類縁機関"){
+    query_lib = query_lib.replace(/".*"/, '"http://id.ndl.go.jp/vocab/libtype#Relateorganizations"');
+    console.log(query_lib);
   }
-// else{
-//     query = query.replace(/".*"/, '"' + select_lib.options[select_lib.selectedIndex].value.toString() + '"');
-//   }
 
-  console.log(query);
 
   $('body').modalmanager('loading').find('.modal-scrollable').off('click.modalmanager');
-    qr = sendQuery(endpoint, query);
+    qr = sendQuery(endpoint, query_lib);
     qr.fail(
         function (xhr, textStatus, thrownError) {
             $('body').modalmanager('removeLoading');
